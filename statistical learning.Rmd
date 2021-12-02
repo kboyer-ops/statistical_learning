@@ -78,3 +78,35 @@ lasso_fit %>%
   
 ```
 
+## Cluster pokemons
+
+```{r}
+pokemon_df <- read_csv("pokemon.csv") %>% 
+  janitor::clean_names() %>% 
+  select(speed, hp)
+```
+
+look at the pokemons 
+```{r}
+pokemon_df %>% 
+  ggplot(aes(x = hp, y = speed)) + 
+  geom_point()
+```
+
+use k-means to identify clusters 
+
+```{r}
+kmeans_fit <- kmeans(x = pokemon_df, centers = 3)
+```
+
+model is the first argument in augment 
+identifies what cluster it is in 
+```{r}
+poke_df <- pokemon_df %>% 
+  broom::augment(kmeans_fit, .)
+
+poke_df %>% 
+  ggplot(aes(x = hp, y = speed, color = .cluster)) + 
+  geom_point(alpha = 0.5)
+```
+
